@@ -47,6 +47,7 @@
 📱 Booking System — Book multiple seats in one booking  
 
 ❌ Booking Cancellation  
+
 ✅ Available Seats API — Real-time seat availability per show  
 
 ---
