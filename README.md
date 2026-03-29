@@ -573,7 +573,9 @@ mysql -u root -p BMS < bms_india_final.sql
 
 ---
 
-### 🖥️ Frontend
+
+## 🖥️ Frontend <a name="frontend"></a>
+
 
 This backend is connected to a **plain HTML, CSS, and JavaScript frontend**.
 
