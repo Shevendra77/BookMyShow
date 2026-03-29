@@ -768,9 +768,9 @@ This project is licensed under the **MIT License** — see the [LICENSE](./LICEN
 - --
 
 
-                                                          ⭐ **Star this repo** if you found it helpful!  
+                                                   ⭐ **Star this repo** if you found it helpful!  
 
-                                                                   Made with ❤️ **in India** 🇮🇳
+                                                              Made with ❤️ **in India** 🇮🇳
 
 
 
