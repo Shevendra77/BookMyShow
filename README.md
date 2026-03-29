@@ -759,12 +759,11 @@ private String phoneNumber;
 
 This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for details.
 --
-
 ## 🙏 Acknowledgements
 
-- Inspired by **BookMyShow** — India's largest entertainment ticketing platform  
-- Built as a **full-stack learning project** with Spring Boot   
-- Special thanks to **Code for Success platform** for guidance and tutorials
+- Inspired by [**BookMyShow**](https://in.bookmyshow.com) — India's largest entertainment ticketing platform  
+- Built as a **full-stack learning project** with Spring Boot  
+- Special thanks to [**Code for Success platform**](https://www.codeforsuccess.com) for guidance and tutorials
 
 - --
 
