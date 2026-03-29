@@ -24,6 +24,7 @@
 - [Running the App](#running-the-app)
 - [Sample Data](#sample-data)
 - [Frontend](#frontend)
+- [Booking Flow](#booking-flow)
 - [Screenshots](#screenshots)
 
 ---
@@ -625,7 +626,8 @@ registry.addMapping("/**")
 ---
 
 
-## 📊 Booking Flow
+## 📊 Booking Flow <a name="booking-flow"></a>
+
 
 The following shows the step-by-step flow for booking tickets in the BookMyShow system:
 
