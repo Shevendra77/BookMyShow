@@ -553,6 +553,17 @@ spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.Ph
 server.port=8080
 server.servlet.context-path=/api
 ```
+### 🔐 Environment Configuration
+
+```properties
+# Email Configuration
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+
+# Razorpay Configuration
+razorpay.key.id=${RAZORPAY_KEY_ID}
+razorpay.key.secret=${RAZORPAY_KEY_SECRET}
+```
 
 ---
 
@@ -801,6 +812,14 @@ private Integer col;
 @Column(name = "phone_number")
 private String phoneNumber;
 ```
+---
+## 📌 Future Enhancements
+
+- 🔐 **Spring Security + JWT Authentication**
+- 🎟️ **QR Code E-Ticket**
+- 📄 **PDF E-Ticket**
+- 📷 **QR Ticket Scanner**
+- 🐳 **Docker Deployment**
 ---
 
 ## 👨‍💻 Author
