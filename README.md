@@ -107,6 +107,7 @@ BMS/
 │       │   │   ├── BookingController.java
 │       │   │   ├── CityController.java
 │       │   │   ├── MovieController.java
+│       │   │   ├── PaymentController.java                    
 │       │   │   ├── ScreenController.java
 │       │   │   ├── SeatController.java
 │       │   │   ├── ShowController.java
@@ -119,6 +120,10 @@ BMS/
 │       │   │   │   └── BookingResponseDTO.java
 │       │   │   ├── LogInDto/
 │       │   │   │   └── LoginRequestDto.java
+│       │   │   ├── PaymentDto/
+│       │   │   │   └── PaymentOrderRequestDto.java
+|       |   |   |   └── PaymentOrderResponceDto.java
+|       |   |   |   └── VerifyPaymentRequestDto.java
 │       │   │   ├── ScreenDto/
 │       │   │   │   └── ScreenResponseDTO.java
 │       │   │   ├── SeatDto/
@@ -134,6 +139,7 @@ BMS/
 │       │   │   ├── Booking.java
 │       │   │   ├── City.java
 │       │   │   ├── Movie.java
+│       │   │   ├── Payment.java
 │       │   │   ├── Screen.java
 │       │   │   ├── Seat.java
 │       │   │   ├── Show.java
@@ -141,12 +147,14 @@ BMS/
 │       │   │   └── User.java
 │       │
 │       │   ├── Enum/
+│       │   │   └── BookingStatus.java 
 │       │   │   └── SeatType.java            # REGULAR, PREMIUM, VIP
 │       │
 │       │   ├── Repository/
 │       │   │   ├── BookingRepository.java
 │       │   │   ├── CityRepository.java
 │       │   │   ├── MovieRepository.java
+│       │   │   ├── PaymentRepository.java
 │       │   │   ├── ScreenRepository.java
 │       │   │   ├── SeatRepository.java
 │       │   │   ├── ShowRepository.java
@@ -156,7 +164,9 @@ BMS/
 │       │   └── Service/
 │       │       ├── BookingService/
 │       │       ├── CityService/
+│       │       ├── EmailService/
 │       │       ├── MoviesService/
+│       │       ├── PaymentService/
 │       │       ├── ScreenService/
 │       │       ├── SeatService/
 │       │       ├── ShowService/
@@ -173,7 +183,6 @@ BMS/
 
 ## 🗄️  Database Schema <a name="database-schema"></a>
 
-
 ```text
 City (id, name, state)
   └──< Theater (id, name, address, city_id)
@@ -181,7 +190,9 @@ City (id, name, state)
               ├──< Seat (id, seat_number, seat_row, seat_col, seat_type, screen_id)
               └──< Show (id, movie_id, screen_id, show_date, start_time, end_time, ticket_price)
                     └──< Booking (id, user_id, show_id, total_price, booking_status, booked_at)
-                          └──< Booking_Seats (booking_id, seat_id)
+                          ├──< Booking_Seats (booking_id, seat_id)
+                          └── Payment (id, booking_id, razorpayOrderId, razorpayPaymentId, razorpaySignature, amount, status)
+
 
 Movie (id, title, language, genre, duration_in_minutes, rating, poster_url, release_date, description)
 
@@ -353,6 +364,15 @@ User (id, name, email, password, phone_number, created_at)
 |--------|----------|-------------|
 | `POST` | `/api/payments/create-order` | Create a Razorpay payment order |
 | `POST` | `/api/payments/verify` | Verify Razorpay payment signature |
+
+### 📝 Request Body — Create Order
+
+```json
+{
+  "bookingId": 101,
+  "amount": 750.00
+}
+```
 
 
 ## 👤 User API
