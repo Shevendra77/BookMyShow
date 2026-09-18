@@ -1,4 +1,4 @@
-# 🎬 BookMyShow — Spring Boot Backend
+# 🎬BookMyShow – Movie Ticket Booking System
 
 ![Java](https://img.shields.io/badge/Java-17-blue)
 ![Spring Boot](https://img.shields.io/badge/SpringBoot-Backend-success)
@@ -8,7 +8,9 @@
 
 ---
 
-🚀 **A full-featured Movie Ticket Booking System REST API built using Spring Boot, JPA/Hibernate, and MySQL — inspired by BookMyShow India.**
+🚀 **A full-stack Movie Ticket Booking Application built using Java, Spring Boot, MySQL, JPA/Hibernate, JavaScript, and Razorpay.**
+
+🎬 **The application allows users to browse movies, select shows and seats, book tickets, make online payments, and receive booking confirmation through email.**
 
 ---
 
@@ -45,9 +47,17 @@
 
 👤 User Registration & Login
 
+💳 **Razorpay Test Mode Payment Integration**
+
+🔐 **Server-Side Razorpay Payment Signature Verification**
+
+📧 **Automatic Email Confirmation After Successful Payment**
+
 📱 Booking System — Book multiple seats in one booking  
 
 ❌ Booking Cancellation  
+
+⚠️ Backend validation and exception handling
 
 ✅ Available Seats API — Real-time seat availability per show  
 
@@ -57,15 +67,24 @@
 
 ## 🛠️ Tech Stack <a name="tech-stack"></a>
 
-| 🛠️ Technology       | 📦 Version | 🎯 Purpose                  |
-|--------------------|-----------|----------------------------|
-| Java               | 24        | Programming Language       |
-| Spring Boot        | 4.0.3     | Web Framework              |
-| Spring Data JPA    | 4.0.3     | ORM / Database Layer       |
-| Hibernate          | 7.2.4     | JPA Implementation         |
-| MySQL              | 8.0       | Database                   |
-| Lombok             | 1.18.42   | Boilerplate Reduction      |
-| Maven              | 3.x       | Build Tool                 |
+| 🛠️ Technology        | 📦 Version | 🎯 Purpose                         |
+|----------------------|-----------|-----------------------------------|
+| Java                 | 24        | Programming Language              |
+| Spring Boot          | 4.0.3     | Web Framework                     |
+| Spring Data JPA      | 4.0.3     | ORM / Database Layer              |
+| Hibernate             | 7.2.4     | JPA Implementation                |
+| MySQL                 | 8.0       | Database                          |
+| Lombok                | 1.18.42   | Boilerplate Reduction             |
+| Maven                 | 3.x       | Build Tool                        |
+| Razorpay              | Test Mode | Online Payment Integration        |
+| JavaMail / Mail       | —         | Email Notifications               |
+| REST API              | —         | Client-Server Communication       |
+| Postman               | —         | API Testing                       |
+| Git                   | —         | Version Control                   |
+| GitHub                | —         | Code Hosting & Collaboration      |
+| HTML                  | 5         | Frontend Structure                |
+| CSS                   | 3         | Frontend Styling                  |
+| JavaScript            | ES6+      | Frontend Interactivity            |
 
 ---
 
@@ -327,6 +346,14 @@ User (id, name, email, password, phone_number, created_at)
 ```
 
 ---
+
+### 💳 Payment APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/payments/create-order` | Create a Razorpay payment order |
+| `POST` | `/api/payments/verify` | Verify Razorpay payment signature |
+
 
 ## 👤 User API
 
@@ -632,47 +659,52 @@ registry.addMapping("/**")
 The following shows the step-by-step flow for booking tickets in the BookMyShow system:
 
 
-
-1. **User selects a Movie**  
-      ↓
-2. **User selects Show** (date/time/theater)  
-      ↓
-3. **Check available seats**  
-
-```http
-GET /bookings/show/{showId}/available-seats
-```
-      ↓
-4. **User selects seats** from the SeatMap  
-      ↓
-5. **Create booking**  
-
-```http
-POST /bookings
-Body:
-{
-  "userId": 1,
-  "showId": 5,
-  "seatIds": [1, 2, 3]
-}
-```
-      ↓
-6. **Booking CONFIRMED ✅**  
-      ↓
-7. **View booking history**  
-
-```http
-GET /bookings/user/{userId}
-```
-      ↓
-8. **Cancel booking if needed**  
-
-```http
-PUT /bookings/{id}/cancel
-```
-
+```text
+👤 User
+   ↓
+🎬 Select Movie
+   ↓
+🏛️ Select Theater
+   ↓
+🎥 Select Show
+   ↓
+💺 Select Seats
+   ↓
+📱 Create Booking
+   ↓
+⏳ Booking Status: PENDING
+   ↓
+💳 Create Razorpay Order
+   ↓
+🔐 Razorpay Checkout
+   ↓
+💰 Complete Payment
+   ↓
+🔍 Verify Payment Signature
+   ↓
+✅ Payment Status: SUCCESS
+   ↓
+🎟️ Booking Status: CONFIRMED
+   ↓
+📧 Send Email Confirmation
 
 ---
+
+## 📧 Email Confirmation
+
+After successful payment verification and booking confirmation, the system automatically sends a movie ticket confirmation email containing:
+
+- 🎬 **Movie Name**
+- 🏛️ **Theater Name**
+- 🎥 **Screen Name**
+- 📅 **Show Date**
+- 🕐 **Show Time**
+- 💺 **Selected Seats**
+- 🎟️ **Booking ID**
+- 💰 **Amount Paid**
+- ✅ **Payment Status**
+
+
 
 ## 🗺️ Supported Cities & Theaters
 
