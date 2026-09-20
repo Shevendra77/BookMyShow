@@ -1,5 +1,4 @@
-
-        package com.cfs.BMS.entity;
+package com.cfs.BMS.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,6 +1,6 @@
 package com.cfs.BMS.service;
 
-
+import com.cfs.BMS.dto.ScreenRequest;
 import com.cfs.BMS.entity.Screen;
 import com.cfs.BMS.entity.Theater;
 import com.cfs.BMS.repository.ScreenRepository;
@@ -16,22 +16,38 @@ public class ScreenService {
     private final ScreenRepository screenRepository;
     private final TheaterService theaterService;
 
-    //addscreen
+    // Add new screen
+    public Screen addScreen(ScreenRequest request) {
 
-    public List<Screen> getAllScreen()
-    {
+        Theater theater = theaterService.getTheaterById(
+                request.getTheaterId()
+        );
+
+        Screen screen = Screen.builder()
+                .name(request.getName())
+                .totalSeats(request.getTotalSeats())
+                .theater(theater)
+                .build();
+
+        return screenRepository.save(screen);
+    }
+
+    // Get all screens
+    public List<Screen> getAllScreen() {
         return screenRepository.findAll();
     }
 
-    public Screen getScreenById(Long id)
-    {
+    // Get screen by ID
+    public Screen getScreenById(Long id) {
         return screenRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("Screen not found with id: "+id));
-
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Screen not found with id: " + id
+                        ));
     }
 
-    public List<Screen> getScreenByTheater(Long theaterId)
-    {
+    // Get screens by theater
+    public List<Screen> getScreenByTheater(Long theaterId) {
         return screenRepository.findByTheaterId(theaterId);
     }
 }

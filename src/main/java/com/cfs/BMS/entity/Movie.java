@@ -1,6 +1,5 @@
 package com.cfs.BMS.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,12 +20,14 @@ public class Movie {
 
     @Column(nullable = false)
     private String title;
+
     private String description;
     private String genre;
     private String language;
     private Integer durationMinutes;
     private Double rating;
     private LocalDate releaseDate;
-    private String posterUrl;
 
+    @Column(columnDefinition = "TEXT")
+    private String posterUrl;
 }
