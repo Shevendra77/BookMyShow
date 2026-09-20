@@ -1,4 +1,4 @@
-# 🎬 BookMyShow — Spring Boot Backend
+# 🎬BookMyShow – Movie Ticket Booking System
 
 ![Java](https://img.shields.io/badge/Java-17-blue)
 ![Spring Boot](https://img.shields.io/badge/SpringBoot-Backend-success)
@@ -8,7 +8,9 @@
 
 ---
 
-🚀 **A full-featured Movie Ticket Booking System REST API built using Spring Boot, JPA/Hibernate, and MySQL — inspired by BookMyShow India.**
+🚀 **A full-stack Movie Ticket Booking Application built using Java, Spring Boot, MySQL, JPA/Hibernate, JavaScript, and Razorpay.**
+
+🎬 **The application allows users to browse movies, select shows and seats, book tickets, make online payments, and receive booking confirmation through email.**
 
 ---
 
@@ -45,9 +47,17 @@
 
 👤 User Registration & Login
 
+💳 **Razorpay Test Mode Payment Integration**
+
+🔐 **Server-Side Razorpay Payment Signature Verification**
+
+📧 **Automatic Email Confirmation After Successful Payment**
+
 📱 Booking System — Book multiple seats in one booking  
 
 ❌ Booking Cancellation  
+
+⚠️ Backend validation and exception handling
 
 ✅ Available Seats API — Real-time seat availability per show  
 
@@ -57,15 +67,24 @@
 
 ## 🛠️ Tech Stack <a name="tech-stack"></a>
 
-| 🛠️ Technology       | 📦 Version | 🎯 Purpose                  |
-|--------------------|-----------|----------------------------|
-| Java               | 24        | Programming Language       |
-| Spring Boot        | 4.0.3     | Web Framework              |
-| Spring Data JPA    | 4.0.3     | ORM / Database Layer       |
-| Hibernate          | 7.2.4     | JPA Implementation         |
-| MySQL              | 8.0       | Database                   |
-| Lombok             | 1.18.42   | Boilerplate Reduction      |
-| Maven              | 3.x       | Build Tool                 |
+| 🛠️ Technology        | 📦 Version | 🎯 Purpose                         |
+|----------------------|-----------|-----------------------------------|
+| Java                 | 24        | Programming Language              |
+| Spring Boot          | 4.0.3     | Web Framework                     |
+| Spring Data JPA      | 4.0.3     | ORM / Database Layer              |
+| Hibernate             | 7.2.4     | JPA Implementation                |
+| MySQL                 | 8.0       | Database                          |
+| Lombok                | 1.18.42   | Boilerplate Reduction             |
+| Maven                 | 3.x       | Build Tool                        |
+| Razorpay              | Test Mode | Online Payment Integration        |
+| JavaMail / Mail       | —         | Email Notifications               |
+| REST API              | —         | Client-Server Communication       |
+| Postman               | —         | API Testing                       |
+| Git                   | —         | Version Control                   |
+| GitHub                | —         | Code Hosting & Collaboration      |
+| HTML                  | 5         | Frontend Structure                |
+| CSS                   | 3         | Frontend Styling                  |
+| JavaScript            | ES6+      | Frontend Interactivity            |
 
 ---
 
@@ -88,6 +107,7 @@ BMS/
 │       │   │   ├── BookingController.java
 │       │   │   ├── CityController.java
 │       │   │   ├── MovieController.java
+│       │   │   ├── PaymentController.java                    
 │       │   │   ├── ScreenController.java
 │       │   │   ├── SeatController.java
 │       │   │   ├── ShowController.java
@@ -100,6 +120,10 @@ BMS/
 │       │   │   │   └── BookingResponseDTO.java
 │       │   │   ├── LogInDto/
 │       │   │   │   └── LoginRequestDto.java
+│       │   │   ├── PaymentDto/
+│       │   │   │   └── PaymentOrderRequestDto.java
+|       |   |   |   └── PaymentOrderResponceDto.java
+|       |   |   |   └── VerifyPaymentRequestDto.java
 │       │   │   ├── ScreenDto/
 │       │   │   │   └── ScreenResponseDTO.java
 │       │   │   ├── SeatDto/
@@ -115,6 +139,7 @@ BMS/
 │       │   │   ├── Booking.java
 │       │   │   ├── City.java
 │       │   │   ├── Movie.java
+│       │   │   ├── Payment.java
 │       │   │   ├── Screen.java
 │       │   │   ├── Seat.java
 │       │   │   ├── Show.java
@@ -122,12 +147,14 @@ BMS/
 │       │   │   └── User.java
 │       │
 │       │   ├── Enum/
+│       │   │   └── BookingStatus.java 
 │       │   │   └── SeatType.java            # REGULAR, PREMIUM, VIP
 │       │
 │       │   ├── Repository/
 │       │   │   ├── BookingRepository.java
 │       │   │   ├── CityRepository.java
 │       │   │   ├── MovieRepository.java
+│       │   │   ├── PaymentRepository.java
 │       │   │   ├── ScreenRepository.java
 │       │   │   ├── SeatRepository.java
 │       │   │   ├── ShowRepository.java
@@ -137,7 +164,9 @@ BMS/
 │       │   └── Service/
 │       │       ├── BookingService/
 │       │       ├── CityService/
+│       │       ├── EmailService/
 │       │       ├── MoviesService/
+│       │       ├── PaymentService/
 │       │       ├── ScreenService/
 │       │       ├── SeatService/
 │       │       ├── ShowService/
@@ -154,7 +183,6 @@ BMS/
 
 ## 🗄️  Database Schema <a name="database-schema"></a>
 
-
 ```text
 City (id, name, state)
   └──< Theater (id, name, address, city_id)
@@ -162,7 +190,9 @@ City (id, name, state)
               ├──< Seat (id, seat_number, seat_row, seat_col, seat_type, screen_id)
               └──< Show (id, movie_id, screen_id, show_date, start_time, end_time, ticket_price)
                     └──< Booking (id, user_id, show_id, total_price, booking_status, booked_at)
-                          └──< Booking_Seats (booking_id, seat_id)
+                          ├──< Booking_Seats (booking_id, seat_id)
+                          └── Payment (id, booking_id, razorpayOrderId, razorpayPaymentId, razorpaySignature, amount, status)
+
 
 Movie (id, title, language, genre, duration_in_minutes, rating, poster_url, release_date, description)
 
@@ -327,6 +357,23 @@ User (id, name, email, password, phone_number, created_at)
 ```
 
 ---
+
+### 💳 Payment APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/payments/create-order` | Create a Razorpay payment order |
+| `POST` | `/api/payments/verify` | Verify Razorpay payment signature |
+
+### 📝 Request Body — Create Order
+
+```json
+{
+  "bookingId": 101,
+  "amount": 750.00
+}
+```
+
 
 ## 👤 User API
 
@@ -506,6 +553,17 @@ spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.Ph
 server.port=8080
 server.servlet.context-path=/api
 ```
+### 🔐 Environment Configuration
+
+```properties
+# Email Configuration
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+
+# Razorpay Configuration
+razorpay.key.id=${RAZORPAY_KEY_ID}
+razorpay.key.secret=${RAZORPAY_KEY_SECRET}
+```
 
 ---
 
@@ -632,47 +690,52 @@ registry.addMapping("/**")
 The following shows the step-by-step flow for booking tickets in the BookMyShow system:
 
 
-
-1. **User selects a Movie**  
-      ↓
-2. **User selects Show** (date/time/theater)  
-      ↓
-3. **Check available seats**  
-
-```http
-GET /bookings/show/{showId}/available-seats
-```
-      ↓
-4. **User selects seats** from the SeatMap  
-      ↓
-5. **Create booking**  
-
-```http
-POST /bookings
-Body:
-{
-  "userId": 1,
-  "showId": 5,
-  "seatIds": [1, 2, 3]
-}
-```
-      ↓
-6. **Booking CONFIRMED ✅**  
-      ↓
-7. **View booking history**  
-
-```http
-GET /bookings/user/{userId}
-```
-      ↓
-8. **Cancel booking if needed**  
-
-```http
-PUT /bookings/{id}/cancel
-```
-
+```text
+👤 User
+   ↓
+🎬 Select Movie
+   ↓
+🏛️ Select Theater
+   ↓
+🎥 Select Show
+   ↓
+💺 Select Seats
+   ↓
+📱 Create Booking
+   ↓
+⏳ Booking Status: PENDING
+   ↓
+💳 Create Razorpay Order
+   ↓
+🔐 Razorpay Checkout
+   ↓
+💰 Complete Payment
+   ↓
+🔍 Verify Payment Signature
+   ↓
+✅ Payment Status: SUCCESS
+   ↓
+🎟️ Booking Status: CONFIRMED
+   ↓
+📧 Send Email Confirmation
 
 ---
+
+## 📧 Email Confirmation
+
+After successful payment verification and booking confirmation, the system automatically sends a movie ticket confirmation email containing:
+
+- 🎬 **Movie Name**
+- 🏛️ **Theater Name**
+- 🎥 **Screen Name**
+- 📅 **Show Date**
+- 🕐 **Show Time**
+- 💺 **Selected Seats**
+- 🎟️ **Booking ID**
+- 💰 **Amount Paid**
+- ✅ **Payment Status**
+
+
 
 ## 🗺️ Supported Cities & Theaters
 
@@ -749,6 +812,14 @@ private Integer col;
 @Column(name = "phone_number")
 private String phoneNumber;
 ```
+---
+## 📌 Future Enhancements
+
+- 🔐 **Spring Security + JWT Authentication**
+- 🎟️ **QR Code E-Ticket**
+- 📄 **PDF E-Ticket**
+- 📷 **QR Ticket Scanner**
+- 🐳 **Docker Deployment**
 ---
 
 ## 👨‍💻 Author
