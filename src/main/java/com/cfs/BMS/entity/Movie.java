@@ -30,4 +30,7 @@ public class Movie {
 
     @Column(columnDefinition = "TEXT")
     private String posterUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String trailerUrl;
 }
