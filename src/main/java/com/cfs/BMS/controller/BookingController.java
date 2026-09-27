@@ -1,6 +1,5 @@
 package com.cfs.BMS.controller;
 
-
 import com.cfs.BMS.dto.BookingRequest;
 import com.cfs.BMS.entity.Booking;
 import com.cfs.BMS.entity.Seat;
@@ -19,34 +18,56 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody BookingRequest request)
+    public ResponseEntity<Booking> createBooking(
+            @RequestBody BookingRequest request)
     {
-        return ResponseEntity.ok(bookingService.createBooking(request));
+        return ResponseEntity.ok(
+                bookingService.createBooking(request)
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable Long id)
+    public ResponseEntity<Booking> getBookingById(
+            @PathVariable Long id)
     {
-        return ResponseEntity.ok(bookingService.getBookingById(id));
+        return ResponseEntity.ok(
+                bookingService.getBookingById(id)
+        );
+    }
+
+    @PostMapping("/{id}/verify-ticket")
+    public ResponseEntity<Booking> verifyTicket(
+            @PathVariable Long id)
+    {
+        return ResponseEntity.ok(
+                bookingService.verifyTicket(id)
+        );
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Booking>> getBookingByUserId(@PathVariable Long userId)
+    public ResponseEntity<List<Booking>> getBookingByUserId(
+            @PathVariable Long userId)
     {
-        return ResponseEntity.ok(bookingService.getBookingByUser(userId));
+        return ResponseEntity.ok(
+                bookingService.getBookingByUser(userId)
+        );
     }
 
     @PutMapping("/{id}/cancel")
-    public ResponseEntity<Booking> cancelBooking(@PathVariable Long id)
+    public ResponseEntity<Booking> cancelBooking(
+            @PathVariable Long id)
     {
-        return ResponseEntity.ok(bookingService.cancelbooking(id));
+        return ResponseEntity.ok(
+                bookingService.cancelbooking(id)
+        );
     }
 
     @GetMapping("/show/{showId}/available-seats")
-    public ResponseEntity<List<Seat>> getAvailableSeats(@PathVariable Long showId)
+    public ResponseEntity<List<Seat>> getAvailableSeats(
+            @PathVariable Long showId)
     {
-        return ResponseEntity.ok(bookingService.getAvailableSeats(showId));
+        return ResponseEntity.ok(
+                bookingService.getAvailableSeats(showId)
+        );
     }
-
-
 }

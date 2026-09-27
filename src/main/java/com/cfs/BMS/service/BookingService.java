@@ -66,6 +66,47 @@ public class BookingService {
 
         return bookingRepository.save(booking);
     }
+    @Transactional
+    public Booking verifyTicket(Long bookingId)
+    {
+        Booking booking = getBookingById(bookingId);
+
+        // Ticket is cancelled
+        if (booking.getStatus() == BookingStatus.CANCELLED)
+        {
+            throw new RuntimeException("Ticket is cancelled");
+        }
+
+        // Ticket has already been used
+        if (booking.getStatus() == BookingStatus.USED)
+        {
+            throw new RuntimeException("Ticket has already been used");
+        }
+
+        // Only confirmed tickets can be used
+        if (booking.getStatus() != BookingStatus.CONFIRMED)
+        {
+            throw new RuntimeException(
+                    "Ticket is not confirmed"
+            );
+        }
+
+        // Change CONFIRMED -> USED
+        int updatedRows = bookingRepository.markBookingAsUsed(
+                bookingId,
+                BookingStatus.USED,
+                BookingStatus.CONFIRMED
+        );
+
+        if (updatedRows == 0)
+        {
+            throw new RuntimeException(
+                    "Ticket verification failed or ticket already used"
+            );
+        }
+
+        return getBookingById(bookingId);
+    }
 
     public Booking getBookingById(Long id)
     {

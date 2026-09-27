@@ -1,12 +1,23 @@
 package com.cfs.BMS.service;
 
 import com.cfs.BMS.entity.Booking;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.qrcode.QRCodeWriter;
+
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayOutputStream;
 
 @Service
 @RequiredArgsConstructor
@@ -14,23 +25,21 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
+
     public void sendBookingConfirmation(Booking booking)
             throws MessagingException {
 
-        // ==============================
+        // =====================================================
         // BASIC DETAILS
-        // ==============================
+        // =====================================================
 
-        String email =
-                booking.getUser().getEmail();
+        String email = booking.getUser().getEmail();
 
         String customerName =
                 booking.getUser().getName();
 
         String movieName =
-                booking.getShow()
-                        .getMovie()
-                        .getTitle();
+                booking.getShow().getMovie().getTitle();
 
         String theaterName =
                 booking.getShow()
@@ -54,35 +63,84 @@ public class EmailService {
                 );
 
 
-        // ==============================
+        // =====================================================
         // SEAT DETAILS
-        // ==============================
+        // =====================================================
 
-        StringBuilder seats =
-                new StringBuilder();
+        StringBuilder seats = new StringBuilder();
 
         booking.getSeats().forEach(seat -> {
 
-            seats.append(
-                    seat.getSeatNumber()
-            );
-
+            seats.append(seat.getSeatNumber());
             seats.append(", ");
 
         });
 
         if (seats.length() > 0) {
-
-            seats.setLength(
-                    seats.length() - 2
-            );
-
+            seats.setLength(seats.length() - 2);
         }
 
 
-        // ==============================
+        // =====================================================
+        // CREATE QR DATA
+        // =====================================================
+
+        String qrText =
+                "{"
+                        + "\"bookingId\":" + booking.getId() + ","
+                        + "\"movie\":\"" + escapeJson(movieName) + "\","
+                        + "\"theater\":\"" + escapeJson(theaterName) + "\","
+                        + "\"screen\":\"" + escapeJson(screenName) + "\","
+                        + "\"date\":\"" + escapeJson(showDate) + "\","
+                        + "\"time\":\"" + escapeJson(startTime) + "\","
+                        + "\"seats\":\"" + escapeJson(seats.toString()) + "\","
+                        + "\"amount\":" + booking.getTotalPrice()
+                        + "}";
+
+
+        // =====================================================
+        // GENERATE QR IMAGE
+        // =====================================================
+
+        byte[] qrImage;
+
+        try {
+
+            QRCodeWriter qrCodeWriter =
+                    new QRCodeWriter();
+
+            BitMatrix bitMatrix =
+                    qrCodeWriter.encode(
+                            qrText,
+                            BarcodeFormat.QR_CODE,
+                            300,
+                            300
+                    );
+
+            ByteArrayOutputStream outputStream =
+                    new ByteArrayOutputStream();
+
+            MatrixToImageWriter.writeToStream(
+                    bitMatrix,
+                    "PNG",
+                    outputStream
+            );
+
+            qrImage =
+                    outputStream.toByteArray();
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(
+                    "Failed to generate QR code",
+                    e
+            );
+        }
+
+
+        // =====================================================
         // HTML EMAIL
-        // ==============================
+        // =====================================================
 
         String htmlContent =
                 "<!DOCTYPE html>" +
@@ -100,6 +158,7 @@ public class EmailService {
 
                         "</head>" +
 
+
                         "<body style='" +
                         "margin:0;" +
                         "padding:0;" +
@@ -107,10 +166,6 @@ public class EmailService {
                         "font-family:Arial,Helvetica,sans-serif;" +
                         "'>" +
 
-
-                        // ==============================
-                        // MAIN CONTAINER
-                        // ==============================
 
                         "<div style='" +
                         "max-width:650px;" +
@@ -122,9 +177,9 @@ public class EmailService {
                         "'>" +
 
 
-                        // ==============================
+                        // =================================================
                         // HEADER
-                        // ==============================
+                        // =================================================
 
                         "<div style='" +
                         "background:#e94560;" +
@@ -138,22 +193,26 @@ public class EmailService {
                         "font-size:28px;" +
                         "letter-spacing:1px;" +
                         "'>" +
+
                         "🎬 BookMyShow" +
+
                         "</h1>" +
 
                         "<p style='" +
                         "margin:8px 0 0;" +
                         "font-size:15px;" +
                         "'>" +
+
                         "Movie Ticket Confirmed" +
+
                         "</p>" +
 
                         "</div>" +
 
 
-                        // ==============================
+                        // =================================================
                         // SUCCESS MESSAGE
-                        // ==============================
+                        // =================================================
 
                         "<div style='" +
                         "padding:25px 30px 10px;" +
@@ -170,7 +229,9 @@ public class EmailService {
                         "font-size:30px;" +
                         "line-height:55px;" +
                         "'>" +
+
                         "✓" +
+
                         "</div>" +
 
                         "<h2 style='" +
@@ -178,7 +239,9 @@ public class EmailService {
                         "color:#222222;" +
                         "font-size:22px;" +
                         "'>" +
+
                         "Booking Successful!" +
+
                         "</h2>" +
 
                         "<p style='" +
@@ -198,9 +261,9 @@ public class EmailService {
                         "</div>" +
 
 
-                        // ==============================
+                        // =================================================
                         // MOVIE TICKET
-                        // ==============================
+                        // =================================================
 
                         "<div style='" +
                         "margin:20px 30px;" +
@@ -208,9 +271,6 @@ public class EmailService {
                         "border-radius:10px;" +
                         "overflow:hidden;" +
                         "'>" +
-
-
-                        // Movie header
 
                         "<div style='" +
                         "background:#1f2937;" +
@@ -230,9 +290,6 @@ public class EmailService {
 
                         "</div>" +
 
-
-                        // Movie details
-
                         "<div style='padding:20px;'>" +
 
                         "<table width='100%' " +
@@ -241,63 +298,66 @@ public class EmailService {
                         "style='font-size:14px;color:#444444;'>" +
 
 
+                        // THEATER
                         "<tr>" +
 
-                        "<td>" +
-                        "<strong>🏢 Theater</strong>" +
-                        "</td>" +
+                        "<td><strong>🏢 Theater</strong></td>" +
 
                         "<td align='right'>" +
+
                         escapeHtml(theaterName) +
+
                         "</td>" +
 
                         "</tr>" +
 
 
+                        // SCREEN
                         "<tr>" +
 
-                        "<td>" +
-                        "<strong>🖥 Screen</strong>" +
-                        "</td>" +
+                        "<td><strong>🖥 Screen</strong></td>" +
 
                         "<td align='right'>" +
+
                         escapeHtml(screenName) +
+
                         "</td>" +
 
                         "</tr>" +
 
 
+                        // DATE
                         "<tr>" +
 
-                        "<td>" +
-                        "<strong>📅 Date</strong>" +
-                        "</td>" +
+                        "<td><strong>📅 Date</strong></td>" +
 
                         "<td align='right'>" +
+
                         escapeHtml(showDate) +
+
                         "</td>" +
 
                         "</tr>" +
 
 
+                        // TIME
                         "<tr>" +
 
-                        "<td>" +
-                        "<strong>🕐 Time</strong>" +
-                        "</td>" +
+                        "<td><strong>🕐 Time</strong></td>" +
 
                         "<td align='right'>" +
+
                         escapeHtml(startTime) +
+
                         "</td>" +
 
                         "</tr>" +
 
 
+                        // SEATS
                         "<tr>" +
 
-                        "<td>" +
-                        "<strong>💺 Seats</strong>" +
-                        "</td>" +
+                        "<td><strong>💺 Seats</strong></td>" +
 
                         "<td align='right' " +
                         "style='color:#e94560;font-weight:bold;'>" +
@@ -316,9 +376,9 @@ public class EmailService {
                         "</div>" +
 
 
-                        // ==============================
+                        // =================================================
                         // PAYMENT DETAILS
-                        // ==============================
+                        // =================================================
 
                         "<div style='" +
                         "margin:20px 30px;" +
@@ -344,16 +404,17 @@ public class EmailService {
                         "style='font-size:14px;'>" +
 
 
+                        // BOOKING ID
                         "<tr>" +
 
-                        "<td style='color:#666666;'>" +
-                        "Booking ID" +
-                        "</td>" +
+                        "<td style='color:#666666;'>Booking ID</td>" +
 
                         "<td align='right'>" +
 
                         "<strong>#" +
+
                         booking.getId() +
+
                         "</strong>" +
 
                         "</td>" +
@@ -361,11 +422,10 @@ public class EmailService {
                         "</tr>" +
 
 
+                        // AMOUNT
                         "<tr>" +
 
-                        "<td style='color:#666666;'>" +
-                        "Amount Paid" +
-                        "</td>" +
+                        "<td style='color:#666666;'>Amount Paid</td>" +
 
                         "<td align='right'>" +
 
@@ -375,6 +435,7 @@ public class EmailService {
                         "'>" +
 
                         "₹" +
+
                         String.format(
                                 "%.2f",
                                 booking.getTotalPrice()
@@ -387,11 +448,10 @@ public class EmailService {
                         "</tr>" +
 
 
+                        // PAYMENT STATUS
                         "<tr>" +
 
-                        "<td style='color:#666666;'>" +
-                        "Payment Status" +
-                        "</td>" +
+                        "<td style='color:#666666;'>Payment Status</td>" +
 
                         "<td align='right'>" +
 
@@ -419,9 +479,71 @@ public class EmailService {
                         "</div>" +
 
 
-                        // ==============================
+                        // =================================================
+                        // QR TICKET
+                        // =================================================
+
+                        "<div style='" +
+                        "margin:20px 30px;" +
+                        "padding:25px;" +
+                        "text-align:center;" +
+                        "border:1px solid #e5e7eb;" +
+                        "border-radius:10px;" +
+                        "background:#ffffff;" +
+                        "'>" +
+
+                        "<h3 style='" +
+                        "margin:0 0 10px;" +
+                        "color:#222222;" +
+                        "font-size:18px;" +
+                        "'>" +
+
+                        "🎟️ Your Ticket QR" +
+
+                        "</h3>" +
+
+                        "<p style='" +
+                        "margin:0 0 18px;" +
+                        "color:#666666;" +
+                        "font-size:13px;" +
+                        "'>" +
+
+                        "Show this QR code at the theater entrance." +
+
+                        "</p>" +
+
+
+                        "<img src='cid:ticketQr' " +
+                        "alt='Ticket QR Code' " +
+                        "width='250' " +
+                        "height='250' " +
+                        "style='" +
+                        "display:block;" +
+                        "margin:0 auto;" +
+                        "border:8px solid #ffffff;" +
+                        "'>" +
+
+
+                        "<p style='" +
+                        "margin:15px 0 0;" +
+                        "color:#555555;" +
+                        "font-size:13px;" +
+                        "'>" +
+
+                        "<strong>Booking #" +
+
+                        booking.getId() +
+
+                        "</strong>" +
+
+                        "</p>" +
+
+                        "</div>" +
+
+
+                        // =================================================
                         // IMPORTANT MESSAGE
-                        // ==============================
+                        // =================================================
 
                         "<div style='" +
                         "margin:20px 30px;" +
@@ -434,20 +556,21 @@ public class EmailService {
                         "'>" +
 
                         "<strong style='color:#e94560;'>" +
+
                         "Important" +
+
                         "</strong>" +
 
                         "<br>" +
 
-                        "Please arrive at the theater " +
-                        "10–15 minutes before the show." +
+                        "Please arrive at the theater 10–15 minutes before the show." +
 
                         "</div>" +
 
 
-                        // ==============================
+                        // =================================================
                         // FOOTER
-                        // ==============================
+                        // =================================================
 
                         "<div style='" +
                         "background:#f1f3f5;" +
@@ -481,9 +604,9 @@ public class EmailService {
                         "</html>";
 
 
-        // ==============================
+        // =====================================================
         // SEND EMAIL
-        // ==============================
+        // =====================================================
 
         MimeMessage message =
                 mailSender.createMimeMessage();
@@ -494,6 +617,7 @@ public class EmailService {
                         true,
                         "UTF-8"
                 );
+
 
         helper.setTo(email);
 
@@ -506,13 +630,47 @@ public class EmailService {
                 true
         );
 
+
+        // =====================================================
+        // ATTACH QR AS INLINE IMAGE
+        // =====================================================
+
+        helper.addInline(
+                "ticketQr",
+                new ByteArrayResource(qrImage),
+                "image/png"
+        );
+
+
+        // =====================================================
+        // SEND EMAIL
+        // =====================================================
+
         mailSender.send(message);
     }
 
 
-    // ==============================
+    // =========================================================
+    // JSON ESCAPE
+    // =========================================================
+
+    private String escapeJson(String value) {
+
+        if (value == null) {
+            return "";
+        }
+
+        return value
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
+    }
+
+
+    // =========================================================
     // HTML ESCAPE
-    // ==============================
+    // =========================================================
 
     private String escapeHtml(String value) {
 
