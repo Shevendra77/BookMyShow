@@ -1,250 +1,367 @@
-# 🎬BookMyShow – Movie Ticket Booking System
+# 🎬 BookMyShow – Movie Ticket Booking System
 
-![Java](https://img.shields.io/badge/Java-17-blue)
-![Spring Boot](https://img.shields.io/badge/SpringBoot-Backend-success)
-![MySQL](https://img.shields.io/badge/MySQL-Database-orange)
+![Java](https://img.shields.io/badge/Java-21-blue)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.3-success)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)
 ![Hibernate](https://img.shields.io/badge/Hibernate-JPA-yellow)
+![Razorpay](https://img.shields.io/badge/Razorpay-Test%20Mode-blueviolet)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
-🚀 **A full-stack Movie Ticket Booking Application built using Java, Spring Boot, MySQL, JPA/Hibernate, JavaScript, and Razorpay.**
+🚀 **A full-stack Movie Ticket Booking Application built using Java, Spring Boot, MySQL, Spring Data JPA, Hibernate, HTML, CSS, JavaScript, and Razorpay.**
 
-🎬 **The application allows users to browse movies, select shows and seats, book tickets, make online payments, and receive booking confirmation through email.**
+🎬 Users can browse movies, select theaters and shows, choose seats, create bookings, make online payments through Razorpay, receive ticket confirmation by email, and access a QR-based digital ticket.
+
+🎟️ **Admin users can scan customer QR tickets using a laptop camera and verify the ticket through the Spring Boot backend. Once successfully verified, a confirmed ticket is marked as `USED` to prevent reuse.**
 
 ---
 
 ## 📋 Table of Contents
 
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Database Schema](#database-schema)
-- [API Reference](#api-reference)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
-- [Running the App](#running-the-app)
-- [Sample Data](#sample-data)
-- [Frontend](#frontend)
-- [Booking Flow](#booking-flow)
-- [Screenshots](#screenshots)
+* [Features](#features)
+* [Tech Stack](#tech-stack)
+* [Project Structure](#project-structure)
+* [Database Schema](#database-schema)
+* [Entity Relationships](#entity-relationships)
+* [API Reference](#api-reference)
+* [Getting Started](#getting-started)
+* [Configuration](#configuration)
+* [Running the App](#running-the-app)
+* [Sample Data](#sample-data)
+* [Frontend](#frontend)
+* [Booking Flow](#booking-flow)
+* [QR Ticket Verification](#qr-ticket-verification)
+* [Email Confirmation](#email-confirmation)
+* [Supported Cities & Theaters](#supported-cities--theaters)
+* [Movies](#movies)
+* [Known Issues & Fixes](#known-issues--fixes)
+* [Future Enhancements](#future-enhancements)
+* [Author](#author)
+* [License](#license)
 
 ---
 
 ## ✨ Features <a name="features"></a>
 
-🏙️ City Management — Manage cities across India  
+### 🎬 Movie & Theater Management
 
-🎬 Movie Catalog — Full movie listing with genre, language, rating, poster  
+* 🏙️ City management
+* 🎬 Movie catalog
+* 🔎 Movie search by title
+* 🎭 Filter movies by genre
+* 🌐 Filter movies by language
+* 🎞️ Movie trailer support
+* 🏛️ Multiple theaters per city
+* 🎥 Multiple screens per theater
+* 🎦 Support for screen types such as IMAX, 4DX and Dolby Atmos
+* 💺 REGULAR / PREMIUM / VIP seat types
+* 🎟️ Multiple shows per screen
 
-🏛️ Theater Management — Multiple theaters per city  
+### 👤 User Features
 
-🎥 Screen Management — Multiple screens per theater (4DX, IMAX, Dolby Atmos) 
+* 👤 User registration
+* 🔐 User login
+* 🎬 Browse movies
+* 🏛️ Select theater
+* 🎥 Select screen and show
+* 💺 Select multiple seats
+* 🎟️ Create booking
+* 📋 View booking history
+* ❌ Cancel booking
+* 🎫 View QR ticket
 
-💺 Seat Management — REGULAR / PREMIUM / VIP seat types  
+### 💳 Payment Features
 
-🎟️ Show Scheduling — Multiple shows per day per screen  
+* 💳 Razorpay Test Mode integration
+* 🔐 Server-side Razorpay payment signature verification
+* 💰 Payment amount validation
+* 📦 Razorpay order creation
+* ✅ Booking confirmation after successful payment
 
-👤 User Registration & Login
+### 📧 Ticket & Notification Features
 
-💳 **Razorpay Test Mode Payment Integration**
+* 📧 Automatic booking confirmation email
+* 🎟️ Digital ticket information
+* 🔳 QR code generation using ZXing
+* 📱 QR ticket available from My Bookings
+* 📧 QR code included in confirmation email
 
-🔐 **Server-Side Razorpay Payment Signature Verification**
+### 🎫 QR Ticket Verification
 
-📧 **Automatic Email Confirmation After Successful Payment**
+* 📷 Admin QR scanner using laptop camera
+* 🔍 QR data extraction using `html5-qrcode`
+* 🔐 Backend ticket verification
+* ✅ Valid `CONFIRMED` ticket accepted
+* 🔄 `CONFIRMED → USED` after successful verification
+* ❌ Cancelled tickets rejected
+* ❌ Already used tickets rejected
+* ❌ Invalid tickets rejected
+* 🔊 Scan confirmation sound
+* 🟢 Visual scan detection indicator
 
-📱 Booking System — Book multiple seats in one booking  
+### ⚙️ Backend Features
 
-❌ Booking Cancellation  
-
-⚠️ Backend validation and exception handling
-
-✅ Available Seats API — Real-time seat availability per show  
+* 🌐 RESTful APIs
+* 🗄️ MySQL database
+* 🔄 Spring Data JPA
+* 🛠️ Hibernate ORM
+* ⚠️ Backend validation
+* 🚨 Exception handling
+* 🌐 CORS configuration
+* 📦 DTO-based API communication
 
 ---
-
-
 
 ## 🛠️ Tech Stack <a name="tech-stack"></a>
 
-| 🛠️ Technology        | 📦 Version | 🎯 Purpose                         |
-|----------------------|-----------|-----------------------------------|
-| Java                 | 24        | Programming Language              |
-| Spring Boot          | 4.0.3     | Web Framework                     |
-| Spring Data JPA      | 4.0.3     | ORM / Database Layer              |
-| Hibernate             | 7.2.4     | JPA Implementation                |
-| MySQL                 | 8.0       | Database                          |
-| Lombok                | 1.18.42   | Boilerplate Reduction             |
-| Maven                 | 3.x       | Build Tool                        |
-| Razorpay              | Test Mode | Online Payment Integration        |
-| JavaMail / Mail       | —         | Email Notifications               |
-| REST API              | —         | Client-Server Communication       |
-| Postman               | —         | API Testing                       |
-| Git                   | —         | Version Control                   |
-| GitHub                | —         | Code Hosting & Collaboration      |
-| HTML                  | 5         | Frontend Structure                |
-| CSS                   | 3         | Frontend Styling                  |
-| JavaScript            | ES6+      | Frontend Interactivity            |
+| 🛠️ Technology  | 📦 Version | 🎯 Purpose                       |
+| --------------- | ---------: | -------------------------------- |
+| Java            |         21 | Programming Language             |
+| Spring Boot     |      4.0.3 | Backend Web Framework            |
+| Spring Data JPA |      4.0.3 | Data Access & ORM                |
+| Hibernate       |        7.x | JPA Implementation               |
+| MySQL           |        8.0 | Relational Database              |
+| Lombok          |    1.18.44 | Boilerplate Code Reduction       |
+| Maven           |        3.x | Build & Dependency Management    |
+| Razorpay        |  Test Mode | Online Payment Integration       |
+| Spring Mail     |          — | Email & Ticket Notifications     |
+| ZXing           |      3.5.3 | QR Code Generation               |
+| html5-qrcode    |          — | QR Code Scanning                 |
+| REST API        |          — | Client-Server Communication      |
+| Postman         |          — | API Testing                      |
+| HTML            |          5 | Frontend Structure               |
+| CSS             |          3 | Frontend Styling                 |
+| JavaScript      |       ES6+ | Frontend Logic & API Integration |
+| Git             |          — | Version Control                  |
+| GitHub          |          — | Code Hosting                     |
 
 ---
 
-
-
-##  📁 Project Structure  <a name="project-structure"></a>
-
+## 📁 Project Structure <a name="project-structure"></a>
 
 ```text
-BMS/
+BookMyShow/
+│
 ├── src/
 │   └── main/
-│       ├── java/com/jaivy/BMS/
-│       │   ├── BmsApplication.java          # Main entry point
-│       │
-│       │   ├── Config/
-│       │   │   └── CorsConfig.java          # CORS configuration
-│       │
-│       │   ├── Controller/
-│       │   │   ├── BookingController.java
-│       │   │   ├── CityController.java
-│       │   │   ├── MovieController.java
-│       │   │   ├── PaymentController.java                    
-│       │   │   ├── ScreenController.java
-│       │   │   ├── SeatController.java
-│       │   │   ├── ShowController.java
-│       │   │   ├── TheaterController.java
-│       │   │   └── UserController.java
-│       │
-│       │   ├── Dto/
-│       │   │   ├── BookingDto/
-│       │   │   │   ├── BookingRequestDto.java
-│       │   │   │   └── BookingResponseDTO.java
-│       │   │   ├── LogInDto/
-│       │   │   │   └── LoginRequestDto.java
-│       │   │   ├── PaymentDto/
-│       │   │   │   └── PaymentOrderRequestDto.java
-|       |   |   |   └── PaymentOrderResponceDto.java
-|       |   |   |   └── VerifyPaymentRequestDto.java
-│       │   │   ├── ScreenDto/
-│       │   │   │   └── ScreenResponseDTO.java
-│       │   │   ├── SeatDto/
-│       │   │   │   └── SeatResponseDTO.java
-│       │   │   ├── ShowDto/
-│       │   │   │   └── ShowResponseDTO.java
-│       │   │   ├── TheaterDto/
-│       │   │   │   └── TheaterResponseDTO.java
-│       │   │   └── UserDto/
-│       │   │       └── UserRequestDto.java
-│       │
-│       │   ├── Entity/
-│       │   │   ├── Booking.java
-│       │   │   ├── City.java
-│       │   │   ├── Movie.java
-│       │   │   ├── Payment.java
-│       │   │   ├── Screen.java
-│       │   │   ├── Seat.java
-│       │   │   ├── Show.java
-│       │   │   ├── Theater.java
-│       │   │   └── User.java
-│       │
-│       │   ├── Enum/
-│       │   │   └── BookingStatus.java 
-│       │   │   └── SeatType.java            # REGULAR, PREMIUM, VIP
-│       │
-│       │   ├── Repository/
-│       │   │   ├── BookingRepository.java
-│       │   │   ├── CityRepository.java
-│       │   │   ├── MovieRepository.java
-│       │   │   ├── PaymentRepository.java
-│       │   │   ├── ScreenRepository.java
-│       │   │   ├── SeatRepository.java
-│       │   │   ├── ShowRepository.java
-│       │   │   ├── TheaterRepository.java
-│       │   │   └── UserRepository.java
-│       │
-│       │   └── Service/
-│       │       ├── BookingService/
-│       │       ├── CityService/
-│       │       ├── EmailService/
-│       │       ├── MoviesService/
-│       │       ├── PaymentService/
-│       │       ├── ScreenService/
-│       │       ├── SeatService/
-│       │       ├── ShowService/
-│       │       ├── TheatorService/
-│       │       └── UserService/
+│       ├── java/
+│       │   └── com/
+│       │       └── cfs/
+│       │           └── BMS/
+│       │               ├── BmsApplication.java
+│       │               │
+│       │               ├── config/
+│       │               │   └── CorsConfig.java
+│       │               │
+│       │               ├── controller/
+│       │               │   ├── BookingController.java
+│       │               │   ├── CityController.java
+│       │               │   ├── MovieController.java
+│       │               │   ├── PaymentController.java
+│       │               │   ├── ScreenController.java
+│       │               │   ├── SeatController.java
+│       │               │   ├── ShowController.java
+│       │               │   ├── TheaterController.java
+│       │               │   └── UserController.java
+│       │               │
+│       │               ├── dto/
+│       │               │   ├── BookingDto/
+│       │               │   │   ├── BookingRequestDto.java
+│       │               │   │   └── BookingResponseDTO.java
+│       │               │   ├── LogInDto/
+│       │               │   │   └── LoginRequestDto.java
+│       │               │   ├── PaymentDto/
+│       │               │   │   ├── PaymentOrderRequestDto.java
+│       │               │   │   ├── PaymentOrderResponseDto.java
+│       │               │   │   └── VerifyPaymentRequestDto.java
+│       │               │   ├── ScreenDto/
+│       │               │   │   └── ScreenResponseDTO.java
+│       │               │   ├── SeatDto/
+│       │               │   │   └── SeatResponseDTO.java
+│       │               │   ├── ShowDto/
+│       │               │   │   └── ShowResponseDTO.java
+│       │               │   ├── TheaterDto/
+│       │               │   │   └── TheaterResponseDTO.java
+│       │               │   └── UserDto/
+│       │               │       └── UserRequestDto.java
+│       │               │
+│       │               ├── entity/
+│       │               │   ├── Booking.java
+│       │               │   ├── City.java
+│       │               │   ├── Movie.java
+│       │               │   ├── Payment.java
+│       │               │   ├── Screen.java
+│       │               │   ├── Seat.java
+│       │               │   ├── Show.java
+│       │               │   ├── Theater.java
+│       │               │   └── User.java
+│       │               │
+│       │               ├── enums/
+│       │               │   ├── BookingStatus.java
+│       │               │   └── SeatType.java
+│       │               │
+│       │               ├── repository/
+│       │               │   ├── BookingRepository.java
+│       │               │   ├── CityRepository.java
+│       │               │   ├── MovieRepository.java
+│       │               │   ├── PaymentRepository.java
+│       │               │   ├── ScreenRepository.java
+│       │               │   ├── SeatRepository.java
+│       │               │   ├── ShowRepository.java
+│       │               │   ├── TheaterRepository.java
+│       │               │   └── UserRepository.java
+│       │               │
+│       │               └── service/
+│       │                   ├── BookingService/
+│       │                   ├── CityService/
+│       │                   ├── EmailService/
+│       │                   ├── MoviesService/
+│       │                   ├── PaymentService/
+│       │                   ├── ScreenService/
+│       │                   ├── SeatService/
+│       │                   ├── ShowService/
+│       │                   ├── TheaterService/
+│       │                   └── UserService/
 │       │
 │       └── resources/
 │           └── application.properties
 │
-└── pom.xml
-
+├── frontend/
+│   ├── index.html
+│   ├── css/
+│   ├── js/
+│   ├── pages/
+│   └── assets/
+│
+├── pom.xml
+└── README.md
 ```
+
+> Package/folder names should match the actual project structure in your repository. If your physical folder names use lowercase (`controller`, `entity`, etc.), keep them lowercase consistently.
+
 ---
 
-## 🗄️  Database Schema <a name="database-schema"></a>
+## 🗄️ Database Schema <a name="database-schema"></a>
 
 ```text
-City (id, name, state)
-  └──< Theater (id, name, address, city_id)
-        └──< Screen (id, name, total_seat, theater_id)
-              ├──< Seat (id, seat_number, seat_row, seat_col, seat_type, screen_id)
-              └──< Show (id, movie_id, screen_id, show_date, start_time, end_time, ticket_price)
-                    └──< Booking (id, user_id, show_id, total_price, booking_status, booked_at)
-                          ├──< Booking_Seats (booking_id, seat_id)
-                          └── Payment (id, booking_id, razorpayOrderId, razorpayPaymentId, razorpaySignature, amount, status)
+City
+ │
+ └──< Theater
+        │
+        └──< Screen
+               │
+               ├──< Seat
+               │
+               └──< Show
+                      │
+                      └──< Booking
+                             │
+                             ├──< Booking_Seats
+                             │
+                             └── Payment
 
 
-Movie (id, title, language, genre, duration_in_minutes, rating, poster_url, release_date, description)
+Movie
+ │
+ └──< Show
 
-User (id, name, email, password, phone_number, created_at)
+
+User
+ │
+ └──< Booking
+```
+
+### Main Entities
+
+```text
+City
+(id, name, state)
+
+Theater
+(id, name, address, city_id)
+
+Screen
+(id, name, total_seat, theater_id)
+
+Seat
+(id, seat_number, seat_row, seat_col, seat_type, screen_id)
+
+Movie
+(id, title, language, genre, duration_in_minutes,
+ rating, poster_url, release_date, trailer_url, description)
+
+Show
+(id, movie_id, screen_id, show_date,
+ start_time, end_time, ticket_price)
+
+User
+(id, name, email, password, phone_number, created_at)
+
+Booking
+(id, user_id, show_id, total_price,
+ booking_status, booked_at)
+
+Booking_Seats
+(booking_id, seat_id)
+
+Payment
+(id, booking_id, razorpay_order_id,
+ razorpay_payment_id, razorpay_signature,
+ amount, status)
 ```
 
 ---
 
-## Entity Relationships
+## 🔗 Entity Relationships <a name="entity-relationships"></a>
 
-| Relationship        | Type         |
-|---------------------|-------------|
-| City → Theaters     | One-to-Many |
-| Theater → Screens   | One-to-Many |
-| Screen → Seats      | One-to-Many |
-| Screen → Shows      | One-to-Many |
-| Movie → Shows       | One-to-Many |
-| User → Bookings     | One-to-Many |
-| Show → Bookings     | One-to-Many |
-| Booking ↔ Seats     | Many-to-Many |
-
----
-
-
-## API Reference
-
-**Base URL:** `http://localhost:8080/api`
+| Relationship      | Type                                                 |
+| ----------------- | ---------------------------------------------------- |
+| City → Theaters   | One-to-Many                                          |
+| Theater → Screens | One-to-Many                                          |
+| Screen → Seats    | One-to-Many                                          |
+| Screen → Shows    | One-to-Many                                          |
+| Movie → Shows     | One-to-Many                                          |
+| User → Bookings   | One-to-Many                                          |
+| Show → Bookings   | One-to-Many                                          |
+| Booking ↔ Seats   | Many-to-Many                                         |
+| Booking → Payment | One-to-One / One-to-Many depending on implementation |
 
 ---
 
-## 🏙️ City API
+## 🌐 API Reference <a name="api-reference"></a>
 
-| Method | Endpoint        | Description        |
-|--------|----------------|--------------------|
-| GET    | /cities        | Get all cities     |
-| GET    | /cities/{id}   | Get city by ID     |
+**Base URL**
+
+```text
+http://localhost:8080/api
+```
 
 ---
 
-## 🎬 Movie API
+### 🏙️ City API
 
-| Method | Endpoint                      | Description           |
-|--------|------------------------------|-----------------------|
-| GET    | /movies                      | Get all movies        |
-| GET    | /movies/{id}                 | Get movie by ID       |
-| POST   | /movies                      | Add new movie         |
-| PUT    | /movies/{id}                 | Update movie          |
-| DELETE | /movies/{id}                 | Delete movie          |
-| GET    | /movies/search?title=        | Search by title       |
-| GET    | /movies/genre/{genre}        | Filter by genre       |
+| Method | Endpoint       | Description    |
+| ------ | -------------- | -------------- |
+| GET    | `/cities`      | Get all cities |
+| GET    | `/cities/{id}` | Get city by ID |
 
-### Request Body (POST /movies)
+---
+
+### 🎬 Movie API
+
+| Method | Endpoint                  | Description            |
+| ------ | ------------------------- | ---------------------- |
+| GET    | `/movies`                 | Get all movies         |
+| GET    | `/movies/{id}`            | Get movie by ID        |
+| POST   | `/movies`                 | Add movie              |
+| PUT    | `/movies/{id}`            | Update movie           |
+| DELETE | `/movies/{id}`            | Delete movie           |
+| GET    | `/movies/search?title=`   | Search movies by title |
+| GET    | `/movies/genre/{genre}`   | Filter by genre        |
+| GET    | `/movies/language/{lang}` | Filter by language     |
+
+**Movie Request**
 
 ```json
 {
@@ -254,6 +371,7 @@ User (id, name, email, password, phone_number, created_at)
   "genre": "Action",
   "language": "Telugu",
   "posterUrl": "https://example.com/poster.jpg",
+  "trailerUrl": "https://youtu.be/example",
   "rating": 8.2,
   "releaseDate": "2024-12-05"
 }
@@ -261,37 +379,37 @@ User (id, name, email, password, phone_number, created_at)
 
 ---
 
-## 🏛️ Theater API
+### 🏛️ Theater API
 
-| Method | Endpoint                    | Description               |
-|--------|-----------------------------|---------------------------|
-| GET    | /theaters/getAllTheater     | Get all theaters          |
-| GET    | /theaters/{id}              | Get theater by ID         |
-| POST   | /theaters                   | Add new theater           |
-| GET    | /theaters/city/{cityId}     | Get theaters by city      |
+| Method | Endpoint                  | Description          |
+| ------ | ------------------------- | -------------------- |
+| GET    | `/theaters/getAllTheater` | Get all theaters     |
+| GET    | `/theaters/{id}`          | Get theater by ID    |
+| POST   | `/theaters`               | Add theater          |
+| GET    | `/theaters/city/{cityId}` | Get theaters by city |
 
-### Request Body (POST /theaters)
+**Request Body**
 
 ```json
 {
-  "name": "PVR ICON, Versova",
-  "address": "Versova, Andheri West, Mumbai 400061",
+  "name": "PVR ICON",
+  "address": "Mumbai",
   "cityId": 1
 }
 ```
 
 ---
 
-## 🎥 Screen API
+### 🎥 Screen API
 
-| Method | Endpoint                         | Description                 |
-|--------|----------------------------------|-----------------------------|
-| GET    | /screens                         | Get all screens             |
-| GET    | /screens/{id}                    | Get screen by ID            |
-| POST   | /screens                         | Add new screen              |
-| GET    | /screens/theater/{theaterId}     | Get screens by theater      |
+| Method | Endpoint                       | Description            |
+| ------ | ------------------------------ | ---------------------- |
+| GET    | `/screens`                     | Get all screens        |
+| GET    | `/screens/{id}`                | Get screen by ID       |
+| POST   | `/screens`                     | Add screen             |
+| GET    | `/screens/theater/{theaterId}` | Get screens by theater |
 
-### Request Body (POST /screens)
+**Request Body**
 
 ```json
 {
@@ -303,15 +421,15 @@ User (id, name, email, password, phone_number, created_at)
 
 ---
 
-## 💺 Seat API
+### 💺 Seat API
 
-| Method | Endpoint                  | Description                |
-|--------|---------------------------|----------------------------|
-| GET    | /seats/screen/{screenId}  | Get seats by screen        |
-| GET    | /seats/{id}               | Get seat by ID             |
-| POST   | /seats                    | Add new seat               |
+| Method | Endpoint                   | Description         |
+| ------ | -------------------------- | ------------------- |
+| GET    | `/seats/screen/{screenId}` | Get seats by screen |
+| GET    | `/seats/{id}`              | Get seat by ID      |
+| POST   | `/seats`                   | Add seat            |
 
-### Request Body (POST /seats)
+**Request Body**
 
 ```json
 {
@@ -323,27 +441,27 @@ User (id, name, email, password, phone_number, created_at)
 }
 ```
 
-### Seat Types
+**Seat Types**
 
-| Type    | Description                         |
-|---------|-------------------------------------|
-| REGULAR | Standard seats (Rows A–C)           |
-| PREMIUM | Premium seats (Rows D–E)            |
-| VIP     | VIP seats (Row F)                   |
+| Type    | Description      |
+| ------- | ---------------- |
+| REGULAR | Standard seating |
+| PREMIUM | Premium seating  |
+| VIP     | VIP seating      |
 
 ---
 
-## 🎟️ Show API
+### 🎟️ Show API
 
-| Method | Endpoint                                      | Description                    |
-|--------|-----------------------------------------------|--------------------------------|
-| GET    | /shows                                        | Get all shows                  |
-| GET    | /shows/{id}                                   | Get show by ID                 |
-| POST   | /shows                                        | Add new show                   |
-| GET    | /shows/movie/{movieId}                        | Get shows by movie             |
-| GET    | /shows/movie/{movieId}/date?date=             | Get shows by movie and date    |
+| Method | Endpoint                            | Description                 |
+| ------ | ----------------------------------- | --------------------------- |
+| GET    | `/shows`                            | Get all shows               |
+| GET    | `/shows/{id}`                       | Get show by ID              |
+| POST   | `/shows`                            | Add show                    |
+| GET    | `/shows/movie/{movieId}`            | Get shows by movie          |
+| GET    | `/shows/movie/{movieId}/date?date=` | Get shows by movie and date |
 
-### Request Body (POST /shows)
+**Request Body**
 
 ```json
 {
@@ -358,33 +476,16 @@ User (id, name, email, password, phone_number, created_at)
 
 ---
 
-### 💳 Payment APIs
+### 👤 User API
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/payments/create-order` | Create a Razorpay payment order |
-| `POST` | `/api/payments/verify` | Verify Razorpay payment signature |
+| Method | Endpoint            | Description    |
+| ------ | ------------------- | -------------- |
+| POST   | `/users/register`   | Register user  |
+| POST   | `/users/login`      | Login user     |
+| GET    | `/users/{id}`       | Get user by ID |
+| GET    | `/users/getalluser` | Get all users  |
 
-### 📝 Request Body — Create Order
-
-```json
-{
-  "bookingId": 101,
-  "amount": 750.00
-}
-```
-
-
-## 👤 User API
-
-| Method | Endpoint             | Description          |
-|--------|----------------------|----------------------|
-| POST   | /users/register      | Register new user    |
-| POST   | /users/login         | Login user           |
-| GET    | /users/{id}          | Get user by ID       |
-| GET    | /users/getalluser    | Get all users        |
-
-### Request Body (Register)
+**Register Request**
 
 ```json
 {
@@ -395,7 +496,7 @@ User (id, name, email, password, phone_number, created_at)
 }
 ```
 
-### Request Body (Login)
+**Login Request**
 
 ```json
 {
@@ -406,17 +507,18 @@ User (id, name, email, password, phone_number, created_at)
 
 ---
 
-## 🎟️ Booking API
+### 🎟️ Booking API
 
-| Method | Endpoint                                      | Description                          |
-|--------|-----------------------------------------------|--------------------------------------|
-| POST   | /bookings                                     | Create new booking                   |
-| GET    | /bookings/{id}                                | Get booking by ID                    |
-| GET    | /bookings/user/{userId}                       | Get bookings by user                 |
-| PUT    | /bookings/{id}/cancel                         | Cancel booking                       |
-| GET    | /bookings/show/{showId}/available-seats       | Get available seats for show         |
+| Method | Endpoint                                  | Description          |
+| ------ | ----------------------------------------- | -------------------- |
+| POST   | `/bookings`                               | Create booking       |
+| GET    | `/bookings/{id}`                          | Get booking by ID    |
+| GET    | `/bookings/user/{userId}`                 | Get bookings by user |
+| PUT    | `/bookings/{id}/cancel`                   | Cancel booking       |
+| GET    | `/bookings/show/{showId}/available-seats` | Get available seats  |
+| POST   | `/bookings/{id}/verify-ticket`            | Verify QR ticket     |
 
-### Request Body (POST /bookings)
+**Create Booking**
 
 ```json
 {
@@ -426,282 +528,393 @@ User (id, name, email, password, phone_number, created_at)
 }
 ```
 
-### Response
+**Booking Status**
+
+```text
+PENDING
+CONFIRMED
+CANCELLED
+USED
+```
+
+**Example Response**
 
 ```json
 {
-  "id": 1,
+  "id": 51,
   "userId": 1,
   "showId": 5,
   "seats": [
-    { "id": 1, "seatNumber": "A1", "seatType": "REGULAR" }
+    {
+      "id": 1,
+      "seatNumber": "A1",
+      "seatType": "REGULAR"
+    }
   ],
-  "totalPrice": 1650,
-  "bookingStatus": "CONFIRMED",
-  "bookedAt": "2026-03-18T10:30:00"
+  "totalPrice": 450,
+  "status": "CONFIRMED"
 }
 ```
 
 ---
 
+### 💳 Payment API
+
+| Method | Endpoint                 | Description             |
+| ------ | ------------------------ | ----------------------- |
+| POST   | `/payments/create-order` | Create Razorpay order   |
+| POST   | `/payments/verify`       | Verify Razorpay payment |
+
+**Create Order**
+
+```json
+{
+  "bookingId": 101,
+  "amount": 750.00
+}
+```
+
+**Payment Verification**
+
+The frontend sends the Razorpay payment information to the backend. The backend verifies the Razorpay signature before confirming the booking.
+
+```text
+Razorpay Checkout
+       ↓
+Payment Completed
+       ↓
+Frontend receives payment details
+       ↓
+Spring Boot Backend
+       ↓
+Verify Razorpay Signature
+       ↓
+Payment Successful
+       ↓
+Booking CONFIRMED
+```
+
+---
+
+## 🎫 QR Ticket Verification <a name="qr-ticket-verification"></a>
+
+The application provides a complete QR-based ticket verification flow.
+
+### QR Generation
+
+QR codes are generated using **ZXing** after successful booking/payment processing. The QR contains booking-related information including the Booking ID.
+
+### Customer Flow
+
+```text
+Successful Payment
+        ↓
+Booking CONFIRMED
+        ↓
+QR Ticket Generated
+        ↓
+QR available in My Bookings
+        ↓
+QR also included in Email
+```
+
+### Admin Flow
+
+```text
+Admin Panel
+    ↓
+Scan QR Ticket
+    ↓
+Laptop Camera
+    ↓
+html5-qrcode
+    ↓
+Decode QR Data
+    ↓
+Extract Booking ID
+    ↓
+POST /bookings/{id}/verify-ticket
+    ↓
+Spring Boot Backend
+    ↓
+Check Booking Status
+```
+
+### Valid Ticket
+
+```text
+CONFIRMED
+    ↓
+Verification Successful
+    ↓
+Status → USED
+    ↓
+Entry Allowed
+```
+
+### Invalid / Used Ticket
+
+```text
+CANCELLED
+     ↓
+Rejected
+
+USED
+     ↓
+Rejected
+
+Invalid Booking ID
+     ↓
+Rejected
+```
+
+This prevents the same confirmed ticket from being successfully verified multiple times.
+
+---
+
+## 📧 Email Confirmation <a name="email-confirmation"></a>
+
+After successful payment verification, the system sends a booking confirmation email.
+
+The email contains:
+
+* 🎬 Movie name
+* 🏛️ Theater name
+* 🎥 Screen name
+* 📅 Show date
+* 🕐 Show time
+* 💺 Selected seats
+* 🎟️ Booking ID
+* 💰 Amount paid
+* ✅ Payment status
+* 🔳 QR ticket
+
+The QR image is generated using **ZXing** and embedded directly into the email.
+
+---
 
 ## 🚀 Getting Started <a name="getting-started"></a>
 
 ### Prerequisites
 
-Make sure you have the following installed:
+* Java 21
+* Maven 3.x
+* MySQL 8.0+
+* Git
+* IntelliJ IDEA / VS Code
+* Modern web browser
 
-- Java 17+ (Project uses Java 24)
-- Maven 3.x
-- MySQL 8.0+
-- Git
-
-
-
-### Installation
-
-#### 1. Clone the Repository
+### 1. Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/BookMyShow-backend.git
-cd bookmyshow-backend
+git clone https://github.com/Shevendr77/BookMyShow.git
+cd BookMyShow
 ```
 
-
-
-#### 2. Create MySQL Database
+### 2. Create MySQL Database
 
 ```sql
 CREATE DATABASE BMS;
 ```
 
+### 3. Configure Database
 
-
-#### 3. Configure `application.properties`
+Update `src/main/resources/application.properties`:
 
 ```properties
-# src/main/resources/application.properties
-
 spring.datasource.url=jdbc:mysql://localhost:3306/BMS?createDatabaseIfNotExist=true
 spring.datasource.username=root
 spring.datasource.password=YOUR_PASSWORD
-```
-
-
-#### 4. Build the Project
-
-```bash
-mvn clean install
-```
-
-#### 5. Run the Application
-
-```bash
-mvn spring-boot:run
-```
-
-
-### Server
-
-✅ Application will start at:
-
-```
-http://localhost:8080/api
-```
-
----
-
-## ⚙️ Configuration <a name="configuration"></a>
-
-
-Path: `src/main/resources/application.properties`
-
-
-
-### Application Settings
-
-```properties
-# Application Name
-spring.application.name=BMS
-```
-
-
-### Database Configuration
-
-```properties
-# MySQL Database Configuration
-spring.datasource.url=jdbc:mysql://localhost:3306/BMS?createDatabaseIfNotExist=true
-spring.datasource.username=root
-spring.datasource.password=your_password
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ```
 
+### 4. Configure Environment Variables
 
-### JPA / Hibernate
+> ⚠️ Do not commit real credentials to GitHub.
 
-```properties
-# Hibernate Configuration
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+Set the following environment variables:
+
+```text
+MAIL_USERNAME
+MAIL_PASSWORD
+RAZORPAY_KEY_ID
+RAZORPAY_KEY_SECRET
 ```
 
-### Server Configuration
+Reference them in `application.properties`:
 
 ```properties
-# Server Settings
-server.port=8080
-server.servlet.context-path=/api
-```
-### 🔐 Environment Configuration
-
-```properties
-# Email Configuration
 spring.mail.username=${MAIL_USERNAME}
 spring.mail.password=${MAIL_PASSWORD}
 
-# Razorpay Configuration
 razorpay.key.id=${RAZORPAY_KEY_ID}
 razorpay.key.secret=${RAZORPAY_KEY_SECRET}
 ```
 
 ---
 
+## ⚙️ Configuration <a name="configuration"></a>
 
-## ▶️ Running the App <a name="running-the-app"></a>
+### Application
 
+```properties
+spring.application.name=BMS
+```
+
+### Database
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/BMS?createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.password=your_password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+```
+
+### JPA / Hibernate
+
+```properties
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+```
+
+### Server
+
+```properties
+server.port=8080
+server.servlet.context-path=/api
+```
 
 ---
 
-###  Using Maven
+## ▶️ Running the App <a name="running-the-app"></a>
+
+### Using Maven
 
 ```bash
+mvn clean install
 mvn spring-boot:run
 ```
 
-
-## Using JAR File
-
-#### Build the JAR
+### Using JAR
 
 ```bash
 mvn clean package
-```
-
-#### Run the JAR
-
-```bash
 java -jar target/BMS-0.0.1-SNAPSHOT.jar
 ```
 
+### Using IntelliJ IDEA
 
-## Using IntelliJ IDEA
+1. Open the project in IntelliJ IDEA.
+2. Open `BmsApplication.java`.
+3. Click **Run ▶️**.
+4. Verify that Spring Boot starts successfully.
 
-1. Open the project in IntelliJ IDEA  
-2. Navigate to `BmsApplication.java`  
-3. Click **Run ▶️**
-
-
-## Verify Application is Running
+### Verify Backend
 
 ```bash
 curl http://localhost:8080/api/movies
 ```
+
+Backend base URL: `http://localhost:8080/api`
+
 ---
 
 ## 🌱 Sample Data <a name="sample-data"></a>
 
-
-Import the SQL file to load real Indian cinema data:
+If the repository contains the SQL dataset, import it using:
 
 ```bash
 mysql -u root -p BMS < bms_india_final.sql
 ```
 
+The sample dataset contains Indian cities, theaters, movies, screens, seats, shows and users.
 
-
-### 📊 Dataset Includes
-
-- 8 Cities — Mumbai, Delhi, Bangalore, Hyderabad, Chennai, Kolkata, Pune, Jaipur  
-- 14 Movies — Pathaan, RRR, Pushpa 2, Jawan, Animal, Leo, and more  
-- 17 Theaters — PVR, INOX, Cinepolis, AMB, SPI across India  
-- 30 Screens — 4DX, IMAX, Dolby Atmos, MX4D, Gold Class  
-- 138 Seats — REGULAR, PREMIUM, VIP across screens  
-- 48 Shows — Today's shows with real timings  
-- 10 Users — Sample user accounts  
+> Dataset counts may change as the project database is updated, so the SQL file should be treated as the source of truth.
 
 ---
-
 
 ## 🖥️ Frontend <a name="frontend"></a>
 
+The frontend is built using:
 
-This backend is connected to a **plain HTML, CSS, and JavaScript frontend**.
+* HTML5
+* CSS3
+* JavaScript ES6+
+* Fetch API
+* Razorpay Checkout
+* html5-qrcode
+* QRCode.js
 
----
-
-### 📁 Project Structure
+The frontend communicates with the Spring Boot backend through REST APIs.
 
 ```text
-bookmyshow-ui/
-├── index.html                  # Main HTML page
-├── css/
-│   └── style.css               # Stylesheet
-├── js/
-│   └── script.js               # Frontend logic
-├── assets/                     # Images, posters, icons
-└── api/
-    └── api.js                  # AJAX / fetch calls to backend APIs
+Frontend
+   ↓
+Fetch API
+   ↓
+Spring Boot REST API
+   ↓
+Service Layer
+   ↓
+Repository Layer
+   ↓
+MySQL
 ```
 
----
+### Run Frontend
 
-### ▶️ Run Frontend
+The frontend can be opened using a local development server such as **VS Code Live Server**:
 
- Open `index.html` in your browser  
-
----
-
-### 🌐 Access Application
-
-```
-http://localhost:3306
+```text
+http://127.0.0.1:5500/
 ```
 
----
+> `3306` is the default MySQL port, not the frontend port.
 
-## 🔧 CORS Configuration
+The backend runs on `http://localhost:8080`, and the API base path is `http://localhost:8080/api`.
 
-CORS is configured in `CorsConfig.java` to allow frontend access:
+### 🔧 CORS Configuration
 
-<pre>
+The backend contains CORS configuration to allow the frontend to communicate with the Spring Boot APIs.
+
+```java
 registry.addMapping("/**")
         .allowedOrigins("*")
-        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        .allowedMethods(
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "OPTIONS"
+        )
         .allowedHeaders("*");
-</pre>
+```
+
+> For production deployment, `allowedOrigins("*")` should be replaced with the actual frontend domain.
 
 ---
-
 
 ## 📊 Booking Flow <a name="booking-flow"></a>
 
-
-The following shows the step-by-step flow for booking tickets in the BookMyShow system:
-
-
 ```text
 👤 User
+   ↓
+🔐 Login / Register
+   ↓
+🏙️ Select City
    ↓
 🎬 Select Movie
    ↓
 🏛️ Select Theater
    ↓
-🎥 Select Show
+🎥 Select Screen
+   ↓
+🎟️ Select Show
    ↓
 💺 Select Seats
    ↓
-📱 Create Booking
+📝 Create Booking
    ↓
 ⏳ Booking Status: PENDING
    ↓
@@ -711,82 +924,114 @@ The following shows the step-by-step flow for booking tickets in the BookMyShow 
    ↓
 💰 Complete Payment
    ↓
-🔍 Verify Payment Signature
+🔍 Verify Razorpay Signature
    ↓
-✅ Payment Status: SUCCESS
+✅ Payment Successful
    ↓
 🎟️ Booking Status: CONFIRMED
    ↓
-📧 Send Email Confirmation
+📧 Send Confirmation Email
+   ↓
+🔳 Generate QR Ticket
+   ↓
+📱 Customer Views QR
+   ↓
+📷 Admin Scans QR
+   ↓
+🔍 Verify Booking
+   ↓
+✅ CONFIRMED → USED
+   ↓
+🎫 Entry Allowed
+```
+
+### 🔐 Booking Status Lifecycle
+
+```text
+PENDING
+   │
+   │ Payment Successful
+   ↓
+CONFIRMED
+   │
+   │ QR Ticket Verified
+   ↓
+USED
+```
+
+Alternative transitions:
+
+```text
+PENDING   → CANCELLED
+CONFIRMED → CANCELLED
+CONFIRMED → USED
+```
+
+The `USED` status prevents successful reuse of an already scanned ticket.
 
 ---
 
-## 📧 Email Confirmation
+## 🗺️ Supported Cities & Theaters <a name="supported-cities--theaters"></a>
 
-After successful payment verification and booking confirmation, the system automatically sends a movie ticket confirmation email containing:
+The sample dataset includes cities and theaters representing multiple locations across India.
 
-- 🎬 **Movie Name**
-- 🏛️ **Theater Name**
-- 🎥 **Screen Name**
-- 📅 **Show Date**
-- 🕐 **Show Time**
-- 💺 **Selected Seats**
-- 🎟️ **Booking ID**
-- 💰 **Amount Paid**
-- ✅ **Payment Status**
+| City      | Example Theaters          |
+| --------- | ------------------------- |
+| Mumbai    | PVR ICON, INOX, Cinepolis |
+| Delhi     | PVR Select Citywalk, INOX |
+| Bangalore | PVR Orion Mall, INOX      |
+| Hyderabad | AMB Cinemas, PVR          |
+| Chennai   | SPI Palazzo, PVR          |
+| Kolkata   | INOX                      |
+| Pune      | PVR, INOX                 |
+| Jaipur    | PVR, Cinepolis            |
 
-
-
-## 🗺️ Supported Cities & Theaters
-
-| City         | Theaters                                                                 |
-|--------------|--------------------------------------------------------------------------|
-| 🏙️ Mumbai    | PVR ICON Versova, INOX R-City Mall, Cinepolis Viviana                     |
-| 🏙️ Delhi     | PVR Select Citywalk, INOX Nehru Place, Cinepolis DLF                      |
-| 🏙️ Bangalore | PVR Orion Mall, INOX Garuda Mall                                         |
-| 🏙️ Hyderabad | AMB Cinemas Gachibowli, PVR Inorbit Mall                                  |
-| 🏙️ Chennai   | SPI Palazzo Vadapalani, PVR VR Chennai                                     |
-| 🏙️ Kolkata   | INOX South City Mall                                                      |
-| 🏙️ Pune      | PVR Pavilion Mall, INOX Westin                                           |
-| 🏙️ Jaipur    | PVR Crystal Palm, Cinepolis GT Central                                    |
+> Sample data can be modified through the database/admin functionality.
 
 ---
 
-## 🎬 Movies Available
+## 🎬 Movies <a name="movies"></a>
 
-| Movie                   | Language | Genre   | Rating |
-|-------------------------|---------|--------|--------|
-| Pathaan                 | Hindi   | Action | ⭐ 8.0 |
-| RRR                     | Telugu  | Action | ⭐ 7.8 |
-| Article 370             | Hindi   | Thriller | ⭐ 8.3 |
-| Jawan                   | Hindi   | Action | ⭐ 7.9 |
-| Pushpa 2: The Rule      | Telugu  | Action | ⭐ 8.2 |
-| Animal                  | Hindi   | Drama  | ⭐ 6.9 |
-| Leo                     | Tamil   | Thriller | ⭐ 7.0 |
-| Dunki                   | Hindi   | Comedy | ⭐ 6.7 |
-| Kalki 2898 AD           | Hindi   | Drama  | ⭐ 7.5 |
-| Jailer                  | Tamil   | Action | ⭐ 7.2 |
-| Crew                    | Hindi   | Comedy | ⭐ 7.1 |
-| Tiger 3                 | Hindi   | Action | ⭐ 5.4 |
-| Sam Bahadur             | Hindi   | Drama  | ⭐ 7.8 |
+The application supports movies with information such as:
+
+| Field        | Example            |
+| ------------ | ------------------ |
+| Title        | Pushpa 2: The Rule |
+| Language     | Telugu             |
+| Genre        | Action             |
+| Rating       | 8.2                |
+| Duration     | 152 minutes        |
+| Release Date | 2024-12-05         |
+| Poster       | Image URL          |
+| Trailer      | YouTube URL        |
+| Description  | Movie description  |
+
 ---
 
-## 🐛 Known Issues & Fixes
+## 🐛 Known Issues & Fixes <a name="known-issues--fixes"></a>
 
-| Issue                         | Fix                                                                 |
-|-------------------------------|---------------------------------------------------------------------|
-| Table 'bms.cities' doesn't exist | Add `@Table(name="City")` to City entity                             |
-| CORS blocked                  | Change `addMapping("/api/**")` to `addMapping("/**")`               |
-| id: undefined in URL          | Add guard: `if (!id || id === 'undefined') navigate('/movies')`     |
-| `durationInMinutes` null      | Add `@Column(name="duration_in_minutes")` to Movie entity            |
-| Double seats in modal         | Use `available-seats` API for `screenId`, not `seatService`         |
----
+| Issue                             | Solution                                                |
+| --------------------------------- | ------------------------------------------------------- |
+| Table name mismatch               | Explicitly map entity table names using `@Table`        |
+| CORS blocked                      | Configure CORS mapping for API requests                 |
+| `id: undefined` in URL            | Validate ID before navigation/API request               |
+| `durationInMinutes` mapping issue | Explicit `@Column` mapping                              |
+| Seat duplication in UI            | Use show-specific available-seat API                    |
+| Camera not opening from `file://` | Run frontend through Live Server/local HTTP server      |
+| QR ticket reused                  | Backend changes `CONFIRMED` → `USED` after verification |
 
-## 📝 Entity Column Mapping
+### 📝 Entity Column Mapping
 
-> Important: Add `PhysicalNamingStrategyStandardImpl` in `application.properties`, then map columns explicitly.
+Because the application uses:
 
-### 🎬 Movie.java
+```properties
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+```
+
+database column names should be mapped explicitly where required.
+
+**Movie**
+
 ```java
 @Column(name = "duration_in_minutes")
 private Integer durationInMinutes;
@@ -794,58 +1039,75 @@ private Integer durationInMinutes;
 @Column(name = "poster_url")
 private String posterUrl;
 
-@Column(name = "realese_date")
-private LocalDate realeseDate;
+@Column(name = "release_date")
+private LocalDate releaseDate;
+
+@Column(columnDefinition = "TEXT")
+private String trailerUrl;
 ```
 
-### 💺 Seat.java
+**Seat**
+
 ```java
-@Column(name = "seat_rol")
+@Column(name = "seat_row")
 private String row;
 
 @Column(name = "seat_col")
 private Integer col;
 ```
 
-### 👤 User.java
+**User**
+
 ```java
 @Column(name = "phone_number")
 private String phoneNumber;
 ```
----
-## 📌 Future Enhancements
 
-- 🔐 **Spring Security + JWT Authentication**
-- 🎟️ **QR Code E-Ticket**
-- 📄 **PDF E-Ticket**
-- 📷 **QR Ticket Scanner**
-- 🐳 **Docker Deployment**
 ---
 
-## 👨‍💻 Author
+## 📌 Future Enhancements <a name="future-enhancements"></a>
 
-**Shevendra77 / Shevendra Singh**
+* 🔐 Spring Security with JWT-based authentication
+* 👥 Role-based access control for Admin/User
+* 🧾 PDF ticket generation
+* 📊 Admin dashboard with booking/payment analytics
+* 📈 Revenue reports
+* 🔔 Notification system
+* 🐳 Docker Compose deployment
+* ☁️ Cloud deployment
+* ⚡ Redis caching
+* 🔄 Distributed locking for high-concurrency seat booking
+* 🧪 Automated unit and integration testing
+* 📱 Responsive mobile-first improvements
+* 🔍 Advanced movie filtering and sorting
 
-- 🌐 GitHub: [https://github.com/Shevendra77/BookMyShow](https://github.com/Shevendra77/BookMyShow.git)
-- 📧 Email: shevendrachandel@gmail.com
 ---
 
-## 📄 License
+## 👨‍💻 Author <a name="author"></a>
 
-This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for details.
---
+**Shevendra Singh Chandel**
+
+* GitHub: [Shevendr77/BookMyShow](https://github.com/Shevendr77/BookMyShow)
+* Email: [shevendrachandel@gmail.com](mailto:shevendrachandel@gmail.com)
+
+---
+
+## 📄 License <a name="license"></a>
+
+This project is licensed under the **MIT License**. See the `LICENSE` file for more information.
+
+---
+
 ## 🙏 Acknowledgements
 
-- Inspired by [**BookMyShow**](https://in.bookmyshow.com) — India's largest entertainment ticketing platform  
-- Built as a **full-stack learning project** with Spring Boot  
-- Special thanks to [**Code for Success platform**] - for guidance and tutorials
+* Inspired by **BookMyShow** for the overall movie-ticket-booking concept.
+* Built as a **full-stack learning project** using Spring Boot and Java.
+* Razorpay is used in **Test Mode** for payment integration.
+* ZXing is used for QR code generation.
+* html5-qrcode is used for camera-based QR scanning.
 
-- --
+---
 
+⭐ **If you find this project useful, consider giving the repository a star!**
 
-                                      ⭐ **Star this repo** if you found it helpful!  
-
-                                                  Made with ❤️ **in India** 🇮🇳
-
-
-
+Made with ❤️ in India 🇮🇳
