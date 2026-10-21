@@ -15,8 +15,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
   List<Booking> findByShowId(Long showId);
 
-  // Find all seat ids that are already booked for given show
-  @Query("SELECT s.id FROM Booking b JOIN b.seats s WHERE b.show.id=:showId AND b.status='CONFIRMED'")
+  // Find all seat ids that are already booked for a given show
+  @Query("""
+        SELECT s.id
+        FROM Booking b JOIN b.seats s
+        WHERE b.show.id = :showId
+          AND b.status = com.cfs.BMS.enums.BookingStatus.CONFIRMED
+    """)
   List<Long> findBookedSeatIdsByShowId(@Param("showId") Long showId);
 
   // Mark a confirmed ticket as used after successful QR verification

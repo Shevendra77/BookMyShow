@@ -18,9 +18,9 @@ public class MovieService {
         return movieRepository.save(movie);
     }
 
-    // Get All Movies
+    // Get All Movies (newest first)
     public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+        return movieRepository.findAllByOrderByIdDesc();
     }
 
     // Get Movie By ID
@@ -33,21 +33,27 @@ public class MovieService {
                 );
     }
 
-    // Search Movies By Title
+    // Search Movies By Title (newest first)
     public List<Movie> searchByTitle(String title) {
-        return movieRepository.findByTitleContainingIgnoreCase(title);
+        return movieRepository.findByTitleContainingIgnoreCaseOrderByIdDesc(title);
     }
 
-    // Get Movies By Genre
+    // Get Movies By Genre (newest first)
     public List<Movie> getByGenre(String genre) {
-        return movieRepository.findByGenre(genre);
+        return movieRepository.findByGenreOrderByIdDesc(genre);
     }
 
-    // Get Movies By Language
+    // Get Movies By Language (newest first)
     public List<Movie> getByLanguage(String language) {
-        return movieRepository.findByLanguage(language);
+        return movieRepository.findByLanguageOrderByIdDesc(language);
+    }
+
+    // Delete Movie
+    public void deleteMovie(Long id) {
+        Movie movie = getMovieById(id);
+        movieRepository.delete(movie);
     }
 
     // Update Movie
-    // Delete Movie
+    // (add this once you share your Movie entity fields)
 }
