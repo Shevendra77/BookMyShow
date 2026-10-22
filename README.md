@@ -151,8 +151,10 @@ BookMyShow/
 │       │           └── BMS/
 │       │               ├── BmsApplication.java
 │       │               │
-│       │               ├── config/
-│       │               │   └── CorsConfig.java
+│       │               ├── config
+|       |               ├── RateLimiterIntercepter.java
+|       |               ├── WebConfig.java
+│       │               └── CorsConfig.java
 │       │               │
 │       │               ├── controller/
 │       │               │   ├── BookingController.java
